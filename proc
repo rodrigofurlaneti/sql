@@ -1,0 +1,463 @@
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoServicoVinculado_consultaServVincCon]    Script Date: 30/08/2017 16:54:18 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <25/08/2017>
+-- Description:	<Consulta a tabela contrato com o IDCON>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoServicoVinculado_consultaServVincCon] 
+	(
+		@id_con			INT,
+		@id_cent_serv   INT
+	)
+AS
+BEGIN
+		select cont.id_contip, cont.id_cent_serv, servvinccont.id_contServVinc, servvinc.id_serv_vinc, 
+	    servvinc.nom_serv_vinc, servvinccont.val_contServVinc  from de_tb_contrato_tiposervico cont
+			
+			inner join de_tb_contrato_servicovinculado servvinccont on servvinccont.id_contip = cont.id_contip
+			inner join de_tb_servico_vinculado servvinc on servvinc.id_serv_vinc = servvinccont.id_serv_vinc
+			 
+	where 
+	cont.id_con = @id_con  and cont.id_cent_serv =  @id_cent_serv
+END
+
+GO
+
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoServicoVinculado_consultaIdConTip]    Script Date: 30/08/2017 16:54:49 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <25/08/2017>
+-- Description:	<Consulta a tabela contrato com o IDCON>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoServicoVinculado_consultaIdConTip] 
+	(
+		@id_contip		INT,
+		@id_serv_vinc	INT
+
+	)
+AS
+BEGIN
+	select cont.id_contServVinc
+		from de_tb_contrato_servicovinculado cont
+	where 
+	id_contip = @id_contip
+	AND
+	id_serv_vinc = @id_serv_vinc
+
+END
+GO
+
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoServicoVinculado_consultaIdCon]    Script Date: 30/08/2017 16:55:02 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <25/08/2017>
+-- Description:	<Consulta a tabela contrato com o IDCON>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoServicoVinculado_consultaIdCon] 
+	(
+		@id_con			INT
+	)
+AS
+BEGIN
+	select cont.id_contip, cont.id_cent_serv, tp.id_tipo, tp.nome_tipo,cus.id_cent_cust, cus.cent_cust, servvinccont.id_contServVinc, servvinc.id_serv_vinc, 
+	servvinc.nom_serv_vinc, servvinccont.val_contServVinc  from de_tb_contrato_tiposervico cont
+			inner join de_tb_centro_servico centserv ON centserv.id_cent_serv = cont.id_cent_serv
+			inner join de_tb_tipo_servico tp ON tp.id_tipo = centserv.id_tipo
+			inner join de_tb_centro_custo cus on cus.id_cent_cust = centserv.id_cent_cust 
+			inner join de_tb_contrato_servicovinculado servvinccont on servvinccont.id_contip = cont.id_contip
+			inner join de_tb_servico_vinculado servvinc on servvinc.id_serv_vinc = servvinccont.id_serv_vinc
+			 
+	where 
+	cont.id_con = @id_con
+END
+
+
+GO
+
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoServicoVinculado_alterar]    Script Date: 30/08/2017 16:55:14 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <23/08/2017>
+-- Description:	<Alterar a tabela contrato servico vinculado>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoServicoVinculado_alterar] 
+	(	
+		@id_contServVinc		INT = NULL,
+		@id_contip				INT = NULL,
+		@id_serv_vinc			INT = NULL,
+		@val_contServVinc		DECIMAL(8,2) = NULL
+	)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	UPDATE de_tb_contrato_servicovinculado SET
+			val_contServVinc	=	@val_contServVinc
+	where
+			id_contServVinc		 = ISNULL (@id_contServVinc , id_contServVinc)   
+	AND
+			id_contip			=	ISNULL (@id_contip , id_contip) 
+	AND
+			id_serv_vinc		=	ISNULL (@id_serv_vinc, id_serv_vinc) 
+END
+
+
+GO
+
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoServicoVinculado_incluir]    Script Date: 30/08/2017 16:55:32 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <15/08/2017>
+-- Description:	<Inserir dados da tabela contrato serviços vinculados>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoServicoVinculado_incluir] 
+	(	@id_contip			int,
+		@id_serv_vinc		int,
+		@val_contServVinc	decimal(8,2)
+	)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	INSERT INTO de_tb_contrato_servicovinculado
+           (id_contip
+		   ,id_serv_vinc
+		   ,val_contServVinc)
+     VALUES
+           (@id_contip
+		   ,@id_serv_vinc
+		   ,@val_contServVinc)
+END
+
+GO
+
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoTipoServico_incluir]    Script Date: 30/08/2017 16:55:48 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <09/08/2017>
+-- Description:	<Inserir dados da tabela contrato tipo servico>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoTipoServico_incluir] 
+	(	@id_con				int,
+		@id_cent_serv		int,
+		@id_contip int OUT
+	)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	INSERT INTO de_tb_contrato_tiposervico
+           (id_con
+		   ,id_cent_serv)
+     VALUES
+           (@id_con
+		   ,@id_cent_serv)
+           Set @id_contip = SCOPE_IDENTITY()	
+END
+
+GO
+
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoTipoServico_excluir]    Script Date: 30/08/2017 16:55:58 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <09/08/2017>
+-- Description:	<Excluir da tabela contrato tipo servico>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoTipoServico_excluir] 
+	(
+		@id_contip int
+	)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DELETE FROM de_tb_contrato_tiposervico WHERE id_contip = @id_contip
+END
+
+GO
+
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoTipoServico_consultaLista]    Script Date: 30/08/2017 16:56:10 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <18/08/2017>
+-- Description:	<Consulta a tabela contrato>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoTipoServico_consultaLista] 
+	(
+		@id_contip		INT = NULL,
+		@id_con			INT = NULL,
+		@id_cent_serv	INT = NULL
+	)
+AS
+BEGIN
+	
+	select contip.id_contip, contip.id_con, contip.id_cent_serv, tp.id_tipo, tp.nome_tipo, cus.id_cent_cust, cus.cent_cust from de_tb_contrato_tiposervico contip
+	inner join de_tb_centro_servico centserv ON centserv.id_cent_serv = contip.id_cent_serv
+	inner join de_tb_tipo_servico tp ON tp.id_tipo = centserv.id_tipo
+	inner join de_tb_centro_custo cus on cus.id_cent_cust = centserv.id_cent_cust 
+	where
+	contip.id_contip = case isnull(@id_contip,0) when 0 then contip.id_contip else @id_contip end
+	AND	
+	contip.id_con = case isnull(@id_con,0) when 0 then contip.id_con else @id_con end
+	AND	
+	centserv.id_cent_serv = case isnull(@id_cent_serv,0) when 0 then centserv.id_cent_serv else @id_cent_serv end
+END
+GO
+
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoTipoServico_consultaIdCon]    Script Date: 30/08/2017 16:56:20 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <18/08/2017>
+-- Description:	<Consulta a tabela contrato com o IDCON>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoTipoServico_consultaIdCon] 
+	(
+		@id_con			INT
+	)
+AS
+BEGIN
+	select cont.id_contip, cont.id_cent_serv, tp.id_tipo, tp.nome_tipo,cus.id_cent_cust, cus.cent_cust from de_tb_contrato_tiposervico cont
+			inner join de_tb_centro_servico centserv ON centserv.id_cent_serv = cont.id_cent_serv
+			inner join de_tb_tipo_servico tp ON tp.id_tipo = centserv.id_tipo
+			inner join de_tb_centro_custo cus on cus.id_cent_cust = centserv.id_cent_cust 
+	where 
+	cont.id_con = @id_con
+END
+
+GO
+
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoTipoServico_consultaId]    Script Date: 30/08/2017 16:56:31 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <24/08/2017>
+-- Description:	<Consulta a tabela contrato>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoTipoServico_consultaId] 
+	(
+		@id_con			INT
+	)
+AS
+BEGIN
+	select id_contip  
+	from de_tb_contrato_tiposervico
+	where id_con = @id_con
+END
+
+GO
+
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoTipoServico_consultaCon]    Script Date: 30/08/2017 16:56:44 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <18/08/2017>
+-- Description:	<Consulta a tabela contrato>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoTipoServico_consultaCon] 
+	(
+		@id_con			INT = NULL
+	)
+AS
+BEGIN
+	
+	select contip.id_contip, contip.id_con, contip.id_cent_serv, tp.id_tipo, tp.nome_tipo, cus.id_cent_cust, cus.cent_cust from de_tb_contrato_tiposervico contip
+	inner join de_tb_centro_servico centserv ON centserv.id_cent_serv = contip.id_cent_serv
+	inner join de_tb_tipo_servico tp ON tp.id_tipo = centserv.id_tipo
+	inner join de_tb_centro_custo cus on cus.id_cent_cust = centserv.id_cent_cust 
+	AND
+	contip.id_con = @id_con
+  END
+
+GO
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoTipoServico_consulta]    Script Date: 30/08/2017 16:56:57 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <09/08/2017>
+-- Description:	<Consulta a tabela contrato>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoTipoServico_consulta] 
+	(
+		@id_contip		INT = NULL,
+		@id_con			INT = NULL
+	)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	if (ISNULL(@id_con, 'NULL') = 'NULL')
+		BEGIN	
+			SELECT	id_contip
+					,id_con
+					,id_cent_serv
+		  FROM de_tb_contrato_tiposervico
+		  where
+		   id_contip = ISNULL(@id_contip, id_contip)	
+		END
+	ELSE
+		BEGIN
+			SELECT	id_contip
+					,id_con
+					,id_cent_serv
+			FROM de_tb_contrato_tiposervico
+		  where
+		   id_contip = ISNULL(@id_contip, id_contip)	
+	END
+END
+
+GO
+
+USE [gerDemandas]
+GO
+
+/****** Object:  StoredProcedure [dbo].[de_stp_ContratoTipoServico_alterar]    Script Date: 30/08/2017 16:57:07 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <24/08/2017>
+-- Description:	<Alterar a tabela contrato tipo servico>
+-- =============================================
+CREATE PROCEDURE [dbo].[de_stp_ContratoTipoServico_alterar] 
+	(	
+		@id_contip		INT,
+		@id_con			INT,
+		@id_cent_serv	INT
+	)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	UPDATE de_tb_contrato_tiposervico SET
+			id_con			=	@id_con,
+			id_cent_serv	=	@id_cent_serv
+	where
+			id_contip	=	@id_contip
+END
+
+GO
+
+
+
+
