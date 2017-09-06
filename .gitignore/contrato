@@ -1,0 +1,34 @@
+USE []
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:		<Rodrigo>
+-- Create date: <25/08/2017>
+-- Description:	<Consulta a tabela contrato com o IDCON>
+-- =============================================
+CREATE PROCEDURE  
+	(
+		@id_con			INT,
+		@id_cent_serv   INT
+	)
+AS
+BEGIN
+		select cont.id_contip, cont.id_cent_serv, servvinccont.id_contServVinc, servvinc.id_serv_vinc, 
+	    servvinc.nom_serv_vinc, servvinccont.val_contServVinc  from de_tb_contrato_tiposervico cont
+			
+			inner join de_tb_contrato_servicovinculado servvinccont on servvinccont.id_contip = cont.id_contip
+			inner join de_tb_servico_vinculado servvinc on servvinc.id_serv_vinc = servvinccont.id_serv_vinc
+			 
+	where 
+	cont.id_con = @id_con  and cont.id_cent_serv =  @id_cent_serv
+END
+
+GO
+
