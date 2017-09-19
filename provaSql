@@ -1,0 +1,265 @@
+Rodrigo Luiz Madeira Furlaneti - RA 1700747 - ADS - 2 SEMESTRE - B - NOITE - QUINTA FEIRA
+
+1) 
+a)
+USE [provaSql]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tabela_venda]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[tabela_venda](
+[Nota_fiscal_venda] [int] IDENTITY(1,1) NOT NULL,
+[Data_venda] [datetime] NOT NULL,
+[Atendente_venda] [varchar](100) COLLATE Latin1_General_CI_AS NULL,
+[Preco_venda] [decimal](10, 4) NOT NULL,
+[Qtde_venda] [int] NOT NULL,
+[Total_venda]  AS ([Preco_venda]*[Qtde_venda]),
+ CONSTRAINT [PK_tabela_venda] PRIMARY KEY CLUSTERED 
+(
+[Nota_fiscal_venda] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+b)
+USE [provaSql]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tabela_produto]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[tabela_produto](
+[Id_produto] [int] IDENTITY(1,1) NOT NULL,
+[Nome_produto] [varchar](50) COLLATE Latin1_General_CI_AS NOT NULL,
+[Preco_produto] [decimal](10, 4) NOT NULL,
+ CONSTRAINT [PK_tabela_produto] PRIMARY KEY CLUSTERED 
+(
+[Id_produto] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+2)
+a) 
+USE [provaSql]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tabela_produto_venda]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[tabela_produto_venda](
+[idproduto_venda] [int] IDENTITY(1,1) NOT NULL,
+[Nota_fiscal_venda] [int] NOT NULL,
+[Id_produto] [int] NOT NULL,
+ CONSTRAINT [PK_tabela_produto_venda] PRIMARY KEY CLUSTERED 
+(
+[idproduto_venda] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+USE [provaSql]
+GO
+
+/****** Object:  Table [dbo].[tabela_venda]    Script Date: 09/19/2017 12:44:31 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tabela_venda]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[tabela_venda](
+[Nota_fiscal_venda] [int] IDENTITY(1,1) NOT NULL,
+[Data_venda] [datetime] NOT NULL,
+[Atendente_venda] [varchar](100) COLLATE Latin1_General_CI_AS NULL,
+[Preco_venda] [decimal](10, 4) NOT NULL,
+[Qtde_venda] [int] NOT NULL,
+[Total_venda]  AS ([Preco_venda]*[Qtde_venda]),
+ CONSTRAINT [PK_tabela_venda] PRIMARY KEY CLUSTERED 
+(
+[Nota_fiscal_venda] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+USE [provaSql]
+GO
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tabela_produto]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[tabela_produto](
+[Id_produto] [int] IDENTITY(1,1) NOT NULL,
+[Nome_produto] [varchar](50) COLLATE Latin1_General_CI_AS NOT NULL,
+[Preco_produto] [decimal](10, 4) NOT NULL,
+ CONSTRAINT [PK_tabela_produto] PRIMARY KEY CLUSTERED 
+(
+[Id_produto] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+USE [provaSql]
+GO
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tabela_produto_venda]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[tabela_produto_venda](
+[idproduto_venda] [int] IDENTITY(1,1) NOT NULL,
+[Nota_fiscal_venda] [int] NOT NULL,
+[Id_produto] [int] NOT NULL,
+ CONSTRAINT [PK_tabela_produto_venda] PRIMARY KEY CLUSTERED 
+(
+[idproduto_venda] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_tabela_produto_tabela_produto]') AND parent_object_id = OBJECT_ID(N'[dbo].[tabela_produto]'))
+ALTER TABLE [dbo].[tabela_produto]  WITH CHECK ADD  CONSTRAINT [FK_tabela_produto_tabela_produto] FOREIGN KEY([Id_produto])
+REFERENCES [dbo].[tabela_produto] ([Id_produto])
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_tabela_produto_tabela_produto]') AND parent_object_id = OBJECT_ID(N'[dbo].[tabela_produto]'))
+ALTER TABLE [dbo].[tabela_produto] CHECK CONSTRAINT [FK_tabela_produto_tabela_produto]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_tabela_produto_tabela_produto1]') AND parent_object_id = OBJECT_ID(N'[dbo].[tabela_produto]'))
+ALTER TABLE [dbo].[tabela_produto]  WITH CHECK ADD  CONSTRAINT [FK_tabela_produto_tabela_produto1] FOREIGN KEY([Id_produto])
+REFERENCES [dbo].[tabela_produto] ([Id_produto])
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_tabela_produto_tabela_produto1]') AND parent_object_id = OBJECT_ID(N'[dbo].[tabela_produto]'))
+ALTER TABLE [dbo].[tabela_produto] CHECK CONSTRAINT [FK_tabela_produto_tabela_produto1]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_tabela_produto_venda_tabela_produto]') AND parent_object_id = OBJECT_ID(N'[dbo].[tabela_produto_venda]'))
+ALTER TABLE [dbo].[tabela_produto_venda]  WITH CHECK ADD  CONSTRAINT [FK_tabela_produto_venda_tabela_produto] FOREIGN KEY([Id_produto])
+REFERENCES [dbo].[tabela_produto] ([Id_produto])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_tabela_produto_venda_tabela_produto]') AND parent_object_id = OBJECT_ID(N'[dbo].[tabela_produto_venda]'))
+ALTER TABLE [dbo].[tabela_produto_venda] CHECK CONSTRAINT [FK_tabela_produto_venda_tabela_produto]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_tabela_produto_venda_tabela_venda]') AND parent_object_id = OBJECT_ID(N'[dbo].[tabela_produto_venda]'))
+ALTER TABLE [dbo].[tabela_produto_venda]  WITH CHECK ADD  CONSTRAINT [FK_tabela_produto_venda_tabela_venda] FOREIGN KEY([Nota_fiscal_venda])
+REFERENCES [dbo].[tabela_venda] ([Nota_fiscal_venda])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_tabela_produto_venda_tabela_venda]') AND parent_object_id = OBJECT_ID(N'[dbo].[tabela_produto_venda]'))
+ALTER TABLE [dbo].[tabela_produto_venda] CHECK CONSTRAINT [FK_tabela_produto_venda_tabela_venda]
+GO
+
+3)
+PROFESSOR CONFORME O TEXTO DA PROVA ACREDITO QUE A TABELA QUE TEM O CAMPO ID_PRODUTO_VENDA SE TRATA DE UMA TABELA DE RELACIONAMENTO MULTIVALORADO, ELA VAI ARMAZENA O ID DO PRODUTO COM O NÚMERO DA NOTA, POIS EM UMA NOTA PODE TER MAIS DE 1 PRODUTO.
+a)
+INSERT INTO [provaSql].[dbo].[tabela_venda] VALUES 
+           (2011-03-012, 'Marco' ,80 ,2)
+GO
+INSERT INTO [provaSql].[dbo].[tabela_venda] VALUES 
+           (2011-03-14, 'Pedro' ,500 ,1)
+           GO
+INSERT INTO [provaSql].[dbo].[tabela_produto_venda] VALUES 
+           (333, 1 ,1)
+           GO
+INSERT INTO [provaSql].[dbo].[tabela_produto_venda] VALUES 
+           (190, 2 ,2)
+           GO
+
+INSERT INTO [provaSql].[dbo].[tabela_produto] VALUES 
+           ('Suporte de material', 80)
+           GO
+INSERT INTO [provaSql].[dbo].[tabela_produto] VALUES 
+           ('Suporte de metal', 500)
+           GO
+
+
+4)
+DELETE FROM [provaSql].[dbo].[tabela_venda]
+WHERE Nota_fiscal_venda = 2;
+
+5)
+
+UPDATE [provaSql].[dbo].[tabela_produto]
+SET Preco_produto = 120
+WHERE Nome_produto = 'Suporte de madeira';
+
+6)
+a)CHAR e VARCHAR são tipos de dados caractere, a diferença é que CHAR é um tipo de dado de comprimento fixo e VARCHAR é de comprimento variável.
+
+b)As restrições podem ser especificadas quando a tabela é criada com a instrução CREATE TABLE, ou depois que a tabela é criada com a instrução ALTER TABLE. 
+A FOREIGN KEY é uma chave usada para vincular duas tabelas.
+A FOREIGN KEY é um campo (ou coleção de campos) em uma tabela que se refere à CHAVE PRIMÁRIA em outra tabela.
+A tabela que contém a chave estrangeira é chamada de tabela filho e a tabela que contém a chave candidata é chamada de tabela referenciada ou pai.
+
+c) 
+o @@Identity tem como propriedade retornar o último valor inserido em uma tabela contendo identity, se está tabela não conter Identity, então a mesma retornará NULL. Se houver uma trigger que realizae a inserção de um registro em uma outra tabela, o valor retornado será o valor da inserção da trigger, isso ocorre porque está função não é limitada a somente um escopo, isso faz com que a mesma busque a informação da última tabela que recebeu um registro,  se deseja saber o último valor inserido dentro de uma tabela em sua conexão/escopo então utilize o Scope_Identity(), mas se você deseja saber o último valor de um campo identity dentro de uma tabela independentemente do que for feito então utilize a Ident_Current.
+
+d) Quando inserimos dados em uma tabela e ela esta com a chave primaria automática, podemos pegar este dado para transferir esta informação para outra tabela, isto é realizado em relacionamento multivalorado. No caso delete podemos observar a chave estrangeira em efeito casaca, ao deletar esta informação, a tabela filha perde os dados, e no caso de update atualiza o id ou a informação do OUTPUT, mas isto tem que ser tratada também  na persistência da aplicação, pois somente ela pode manda os comando e a logica .
+
