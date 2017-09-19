@@ -1,0 +1,11 @@
+CREATE PROCEDURE uvwCliente
+AS
+	SELECT
+		idcliente,
+		nomecliente
+	FROM
+		tabela_cliente
+	WHERE
+		status_cliente = 1
+
+
