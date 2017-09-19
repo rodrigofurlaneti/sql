@@ -1,0 +1,50 @@
+CREATE PROCEDURE uspPersisteCliente
+
+	--@PARÂMETROS DE ENTRADA : APLICAÇÃO 
+
+	@acao INT, --PARÂMETRO QUE DETERMINA A AÇÃO DA PROCEDURE (O = EXCLUIR, 1 = INSERIR , 2 = ALTERAR)
+	@idcliente INT = NULL,
+	@nomecliente VARCHAR(50) = NULL,
+	@statuscliente BIT = NULL
+
+AS
+BEGIN
+	IF (@acao = 0) -- 0 = EXCLUIR DADOS DA TABELA
+	BEGIN
+		DELETE FROM tabela_cliente
+		WHERE idcliente = @idcliente
+
+			SELECT @idcliente AS RETORNO
+
+	END
+
+	ELSE IF (@acao = 1) -- 1 = INSERIR DADOS DA TABELA
+	BEGIN
+		INSERT INTO tabela_cliente VALUES
+		(
+			@nomecliente,
+			@statuscliente,
+			GETDATE()
+		)
+			SELECT @@IDENTITY AS RETORNO
+
+	END
+	
+	ELSE IF (@acao = 2) -- 2 = ALTERAR DADOS DA TABELA
+	BEGIN
+		UPDATE tabelacliente
+		SET 
+			nomecliente = @nomecliente, 
+			statuscliente = @statuscliente
+		WHERE
+			idcliente = @idcliente
+
+			SELECT @idcliente AS RETORNO
+
+	END
+	ELSE
+	BEGIN
+		RAISERROR('ID DA AÇÃO QUE PASSOU PARA A STORED PROCEDURE uspPersisteCliente ESTA FORA DO ESCOPO, ENTRE EM CONTATO COM O ADMINISTRADOR DO BANCO!', 14,1);
+	END
+END		
+
