@@ -1,0 +1,113 @@
+CREATE PROCEDURE uspCadastraCliente
+
+	--@PARÂMETROS DE ENTRADA : APLICAÇÃO 
+
+	@idcliente INT,
+	@nomecliente VARCHAR(50),
+	@datanascimentocliente DATETIME,
+	@sexocliente BIT,
+	@limitecompracliente DECIMAL (18,2),
+	@telefoneumcliente VARCHAR (20) = NULL,
+	@telefonedoiscliente VARCHAR (20) = NULL,
+	@emailumcliente VARCHAR (50) = NULL,
+	@emaildoiscliente VARCHAR (50) = NULL,
+AS
+BEGIN
+	BEGIN TRY
+		BEGIN TRAN
+
+			--INSERIR DADOS NA TABELA CLIENTE
+			INSERT INTO tabela_cliente 
+				(
+					nomecliente,
+					datanascimentocliente,
+					sexocliente,
+					limitecompracliente
+				)
+				VALUES
+				(
+					@nomecliente,
+					@datanascimentocliente,
+					@sexocliente,
+					@limitecompracliente
+				)
+
+				DECLARE @idcliente AS INT = @@IDENTITY
+
+
+			--INSERIR DADOS NA TABELA TELEFONE UM
+			IF (@telefoneumcliente IS NOT NULL)
+			BEGIN
+				INSERT INTO tabela_telefone 
+				(
+					idcliente,
+					telefoneumcliente
+				)
+				VALUES
+				(
+					@idcliente,
+					@telefoneumcliente
+				)
+
+			END
+
+			--INSERIR DADOS NA TABELA TELEFONE
+			IF (@telefonedoiscliente IS NOT NULL)
+			BEGIN
+				INSERT INTO tabela_telefone 
+				(
+					idcliente,
+					telefonedoiscliente
+				)
+				VALUES
+				(
+					@idcliente,
+					@telefonedoiscliente
+				)
+
+			END
+			
+			--INSERIR DADOS NA TABELA EMAIL
+			IF (@emailumcliente IS NOT NULL)
+			BEGIN
+				INSERT INTO tabela_email 
+				(
+					idcliente,
+					emailumcliente
+				)
+				VALUES
+				(
+					@idcliente,
+					@emailumcliente
+				)
+
+			END
+
+			--INSERIR DADOS NA TABELA EMAIL
+			IF (@emaildoiscliente IS NOT NULL)
+			BEGIN
+				INSERT INTO tabela_email 
+				(
+					idcliente,
+					emaildoiscliente
+				)
+				VALUES
+				(
+					@idcliente,
+					@emaildoiscliente
+				)
+
+			END
+
+				SELECT @idcliente AS RETORNO
+				
+		COMMIT TRAN
+	END TRY
+	
+	BEGIN CATCH
+		ROLLBACK TRAN
+		SELECT ERROR_MENSSAGE() AS RETORNO
+	END	CATCH
+	
+END		
+
