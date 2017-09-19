@@ -1,0 +1,13 @@
+CREATE PROCEDURE uspExcluirCliente
+
+
+	@idcliente INT
+
+AS
+BEGIN
+	
+	DELETE FROM tabela_cliente
+	WHERE idcliente = @idcliente
+	
+END		
+
