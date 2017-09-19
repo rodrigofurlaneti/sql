@@ -1,0 +1,24 @@
+CREATE PROCEDURE uspAlterarCliente
+
+	--@PARÂMETROS DE ENTRADA : APLICAÇÃO 
+
+	@idcliente INT,
+	@nomecliente VARCHAR(50),
+	@datanascimentocliente DATETIME,
+	@sexocliente BIT,
+	@limitecompracliente DECIMAL (18,2)
+
+AS
+BEGIN
+	
+	UPDATE tabela_cliente
+	SET
+		nomecliente = @nomecliente,
+		datanascimentocliente = @datanascimentocliente,
+		sexocliente = @sexocliente,
+		limitecompracliente = @limitecompracliente
+		
+	WHERE idcliente = @idcliente
+	
+END		
+
