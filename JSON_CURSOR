@@ -1,0 +1,88 @@
+USE [DBSH999]
+GO
+SET ANSI_NULL ON
+GO
+SET QUOTED_IDENTFIER ON
+GO
+CREATE PROCEDURE [dbo].[SPSH999_CRUD_NOME_PROC](@PE_JSON INT,
+    @PE_ID_CLIENTE INT,
+    @PE_NOME VARCHAR(200),
+    @PE_ENDERECO VARCHAR(200),
+    @PE_CIDADE VARCHAR(100),
+    @PE_ESTADO VARCHAR(100),
+    @PE_EXCLUIR VARCHAR(2),
+    @PS_RETURN INT OUTPUT,
+    @PS_MESSAGE VARCHAR(MAX) OUTPUT) AS
+SET NOCOUNT ON
+DECLARE @ROWCOUNT          INT,
+        @V_ACAO            VARCHAR(6),
+        @V_ID_CLIENTE      INT,
+        @V_NOME            VARCHAR(200),
+        @V_ENDERECO        VARCHAR(200),
+        @V_CIDADE          VARCHAR(100),
+        @V_ESTADO          VARCHAR(100),
+        @V_DATA_ATUALIZADO DATETIME
+BEGIN TRY
+    IF @PE_EXCLUIR <> 'S' BEGIN
+        DECLARE CURSORJSON CURSOR FOR
+            SELECT * FROM OPENJSON(@PE_JSON) WITH(
+                IdCliente      INT          '$.idCliente',  
+                Nome           VARCHAR(200) '$.nome',
+                Endereco       VARCHAR(200) '$.endereco',
+                Cidade         VARCHAR(100) '$.cidade',
+                Estado         VARCHAR(100) '$.estado',
+                DataAtualizado DATETIME     '$.dataAtualizado')
+            OPEN CURSORJSON
+            FETCH NEXT FROM CURSORJSON INTO @V_ID_CLIENTE,
+                                            @V_NOME,
+                                            @V_ENDERECO,
+                                            @V_CIDADE,
+                                            @V_ESTADO,
+                                            @V_DATA_ATUALIZADO
+                                            WHILE @@FETCH_STATUS = 0 BEGIN
+                                            SET @PE_NOME     = @V_NOME
+                                            SET @PE_ENDERECO = @V_ENDERECO
+                                            SET @PE_CIDADE   = @V_CIDADE
+                                            SET @PE_ESTADO   = @V_ESTADO
+                                            IF @V_ACAO = 'UPDATE' BEGIN
+                                                UPDATE TB_CLIENTE SET
+                                                    NOME             = @PE_NOME,
+                                                    ENDERECO         = @PE_ENDERECO,
+                                                    CIDADE           = @PE_CIDADE,
+                                                    ESTADO           = @PE_ESTADO,
+                                                    DATA_ATUALIZACAO = GETDATE()
+                                                    WHERE ID_CLIENTE = @PE_ID_CLIENTE
+                                                END
+                                                IF @PE_ID_CLIENTE = 0 BEGIN
+                                                    INSERT TB_CLIENTE
+                                                        (NOME,
+                                                        ENDERECO,
+                                                        CIDADE,
+                                                        ESTADO,
+                                                        DATA_ATUALIZACAO)
+                                                    VALUES(@PE_NOME,
+                                                           @PE_ENDERECO,
+                                                           @PE_CIDADE,
+                                                           @PE_ESTADO,
+                                                           GETDATE())
+                                                    SET @PS_MESSAGE = '[' + OBJECT_NAME(@@PROCID) + '] EXECUTADO COM SUCESSO - INSERIDO 1 NOVO REGISTRO!'
+                                                END
+                        FETCH NEXT FROM CURSORJSON INTO @V_ID_CLIENTE,
+                                                        @V_NOME,
+                                                        @V_ENDERECO,
+                                                        @V_CIDADE,
+                                                        @V_ESTADO
+                    CLOSE CURSORJSON
+                DEALLOCATE CURSORJSON
+            END 
+        SET @PS_MESSAGE = '[' + OBJECT_NAME(@@PROCID) + '] EXECUTADO COM SUCESSO - ATUALIZADO 1 NOVO REGISTRO!'
+    END
+    ELSE BEGIN
+        DELETE TB_CLIENTE WHERE ID_CLIENTE = @PE_ID_CLIENTE
+    END
+    SET @PS_RETURN = 0
+END TRY
+BEGIN CATCH
+SET @PS_RETURN = ERROR_LINE()
+SET @PS_MESSAGE = '[' + OBJECT_NAME(@@PROCID) + '] ERRO, LINHA: ' + CONVERT(VARCHAR(5), ERRO_LINE()) + ' -- CODIGO:  ' + CONVERT(VARCHAR(5), ERROR_MESSAGE())
+END CATCH
